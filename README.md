@@ -33,3 +33,7 @@ Weight calculation is done by histogramming all values rounded to one decimal di
 
 Feel free to use processor.weight to do whatever you want with the calculated weight (I send it to a server for
 further pointless processing).
+
+## License
+
+This software is made available under the [Lesser GPL license](http://www.gnu.org/licenses/lgpl.html).
