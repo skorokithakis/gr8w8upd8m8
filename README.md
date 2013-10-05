@@ -9,7 +9,7 @@ pygame) removed. I'm pretty sure it only works on Linux.
 
 To run `gr8webupd8m8`, you need:
 * Linux.
-* The `bluez-tools` package.
+* The `bluez-tools` package (you might need to install also `python-bluez`).
 * Bluetooth.
 
 ## Usage
