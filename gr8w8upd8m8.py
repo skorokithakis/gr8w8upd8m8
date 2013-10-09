@@ -4,6 +4,7 @@ import collections
 import time
 import bluetooth
 import sys
+import subprocess
 
 CONTINUOUS_REPORTING = "04"  # Easier as string with leading zero
 
@@ -47,6 +48,8 @@ class EventProcessor:
 
     @property
     def weight(self):
+        if not self._events:
+            return 0
         histogram = collections.Counter(round(num, 1) for num in self._events)
         return histogram.most_common(1)[0][0]
 
@@ -276,17 +279,27 @@ def main():
     else:
         address = sys.argv[1]
 
+    try:
+        # Disconnect already-connected devices.
+        # This is basically Linux black magic just to get the thing to work.
+        subprocess.check_output(["bluez-test-input", "disconnect", address], stderr=subprocess.STDOUT)
+        subprocess.check_output(["bluez-test-input", "disconnect", address], stderr=subprocess.STDOUT)
+    except:
+        pass
+
     print "Trying to connect..."
     board.connect(address)  # The wii board must be in sync mode at this time
     board.wait(200)
+    # Flash the LED so we know we can step on.
+    board.setLight(False)
+    board.wait(500)
     board.setLight(True)
     board.receive()
 
     print processor.weight
 
     # Disconnect the balance board after exiting.
-    import subprocess
-    subprocess.check_output(["bt-device", "-d", "Nintendo RVL-WBC-01"])
+    subprocess.check_output(["bluez-test-device", "disconnect", address])
 
 if __name__ == "__main__":
     main()

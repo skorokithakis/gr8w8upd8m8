@@ -9,7 +9,7 @@ pygame) removed. I'm pretty sure it only works on Linux.
 
 To run `gr8webupd8m8`, you need:
 * Linux.
-* The `bluez-tools` package (you might need to install also `python-bluez`).
+* The `bluez-utils` package (you might need to install also `python-bluez`).
 * Bluetooth.
 
 ## Usage
@@ -26,8 +26,9 @@ If you already know the address, you can just specify it:
 
 That will skip the discovery process, and connect directly.
 
-`gr8w8upd8m8` uses the `bt-device` utility of `bluez-tools` to disconnect the board at the end, which causes the board
-to shut off. Pairing it with the OS will allow you to use the front button to reconnect to it and run the script.
+`gr8w8upd8m8` uses the `bluez-test-device` utility of `bluez-utils` to disconnect the board at the end, which causes
+the board to shut off. Pairing it with the OS will allow you to use the front button to reconnect to it and run the
+script.
 
 Weight calculation is done by histogramming all values rounded to one decimal digit and picking the most frequent.
 
