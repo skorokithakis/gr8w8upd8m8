@@ -30,7 +30,7 @@ That will skip the discovery process, and connect directly.
 the board to shut off. Pairing it with the OS will allow you to use the front button to reconnect to it and run the
 script.
 
-Weight calculation is done by histogramming all values rounded to one decimal digit and picking the most frequent.
+Calculating the final weight is done by calculating the mode of all the event data, rounded to one decimal digit.
 
 Feel free to use processor.weight to do whatever you want with the calculated weight (I send it to a server for
 further pointless processing).
