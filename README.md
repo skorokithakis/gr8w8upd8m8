@@ -51,7 +51,7 @@ This software is made available under the [Lesser GPL license](http://www.gnu.or
 
 This project is a mix of various scripts and samples. Thanks go to:
 
-[wiiboard-simple](https://code.google.com/p/wiiboard-simple/), for providing the base script.
-[Ryan Myers](https://github.com/Ryan-Myers/), for his [Wiiboard-Net](https://github.com/Ryan-Myers/Wiiboard-Net)
+* [wiiboard-simple](https://code.google.com/p/wiiboard-simple/), for providing the base script.
+* [Ryan Myers](https://github.com/Ryan-Myers/), for his [Wiiboard-Net](https://github.com/Ryan-Myers/Wiiboard-Net)
 project and for telling me about `xwiibind.sh.`
-[xwiimote](https://github.com/dvdhrm/xwiimote) for the xwiibind.sh script itself.
+* [xwiimote](https://github.com/dvdhrm/xwiimote) for the xwiibind.sh script itself.
