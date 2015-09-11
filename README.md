@@ -12,6 +12,14 @@ To run `gr8w8upd8m8`, you need:
 * The `bluez-utils` package (you might need to install also `python-bluez`).
 * Bluetooth.
 
+## Pairing the board
+
+Thanks to Ryan Myers for the following:
+
+Install `bluez bluez-utils python-bluez`, and run the included `xwiibind.sh`. Follow the prompts, and your balance
+board should be paired by the end of this. Notice that BlueZ 4.99 is required, BlueZ 5+ changes the DBus API in
+incompatible ways.
+
 ## Usage
 
 You can run it with:
@@ -38,3 +46,12 @@ further pointless processing).
 ## License
 
 This software is made available under the [Lesser GPL license](http://www.gnu.org/licenses/lgpl.html).
+
+## Credits
+
+This project is a mix of various scripts and samples. Thanks go to:
+
+[wiiboard-simple](https://code.google.com/p/wiiboard-simple/), for providing the base script.
+[Ryan Myers](https://github.com/Ryan-Myers/), for his [Wiiboard-Net](https://github.com/Ryan-Myers/Wiiboard-Net)
+project and for telling me about `xwiibind.sh.`
+[xwiimote](https://github.com/dvdhrm/xwiimote) for the xwiibind.sh script itself.
