@@ -1,5 +1,8 @@
 # Gr8W8Upd8M8
 
+[![Code Shelter](https://www.codeshelter.co/static/badges/badge-flat.svg)](https://www.codeshelter.co/)
+
+
 ## A Wii balance board weight reporter
 
 This script is based on [wiiboard-simple](https://code.google.com/p/wiiboard-simple/), with some dependencies (like
