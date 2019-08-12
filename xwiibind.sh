@@ -7,7 +7,7 @@
 #
 
 # Modified very slightly by Ryan Myers to clarify instructions for a Wiiboard
-# and automatically trust the device so it can 
+# and automatically trust the device so it can
 # reconnect with no user interaction.
 
 #
