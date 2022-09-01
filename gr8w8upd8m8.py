@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-
 import collections
-import time
-import bluetooth
-import sys
 import subprocess
+import sys
+import time
+
+import bluetooth
 
 CONTINUOUS_REPORTING = "04"  # Easier as string with leading zero
 
@@ -14,12 +14,12 @@ COMMAND_REQUEST_STATUS = 15
 COMMAND_REGISTER = 16
 COMMAND_READ_REGISTER = 17
 
-#input is Wii device to host
+# input is Wii device to host
 INPUT_STATUS = 20
 INPUT_READ_DATA = 21
 
 EXTENSION_8BYTES = 32
-#end "hex" values
+# end "hex" values
 
 BUTTON_DOWN_MASK = 8
 
@@ -29,6 +29,7 @@ TOP_LEFT = 2
 BOTTOM_LEFT = 3
 
 BLUETOOTH_NAME = "Nintendo RVL-WBC-01"
+
 
 class EventProcessor:
     def __init__(self):
@@ -54,7 +55,9 @@ class EventProcessor:
 
 
 class BoardEvent:
-    def __init__(self, topLeft, topRight, bottomLeft, bottomRight, buttonPressed, buttonReleased):
+    def __init__(
+        self, topLeft, topRight, bottomLeft, bottomRight, buttonPressed, buttonReleased
+    ):
 
         self.topLeft = topLeft
         self.topRight = topRight
@@ -62,7 +65,7 @@ class BoardEvent:
         self.bottomRight = bottomRight
         self.buttonPressed = buttonPressed
         self.buttonReleased = buttonReleased
-        #convenience value
+        # convenience value
         self.totalWeight = topLeft + topRight + bottomLeft + bottomRight
 
 
@@ -81,7 +84,9 @@ class Wiiboard:
         for i in range(3):
             self.calibration.append([])
             for j in range(4):
-                self.calibration[i].append(10000)  # high dummy value so events with it don't register
+                self.calibration[i].append(
+                    10000
+                )  # high dummy value so events with it don't register
 
         self.status = "Disconnected"
         self.lastEvent = BoardEvent(0, 0, 0, 0, False, False)
@@ -107,7 +112,7 @@ class Wiiboard:
             self.status = "Connected"
             self.address = address
             self.calibrate()
-            useExt = "00"+str(COMMAND_REGISTER)+ "04"+ "A4"+ "00"+ "40"+ "00"
+            useExt = "00" + str(COMMAND_REGISTER) + "04" + "A4" + "00" + "40" + "00"
             self.send(useExt)
             self.setReportingType()
             print("WiiBoard connected")
@@ -115,7 +120,7 @@ class Wiiboard:
             print("Could not connect to WiiBoard at address " + address)
 
     def receive(self):
-        #try:
+        # try:
         #   self.receivesocket.settimeout(0.1)       #not for windows?
         while self.status == "Connected" and not self.processor.done:
             data = self.receivesocket.recv(25)
@@ -126,8 +131,8 @@ class Wiiboard:
             elif intype == INPUT_READ_DATA:
                 if self.calibrationRequested:
                     print("Calibration input received")
-                    packetLength =(int(int(data[4:5].hex(), 16) / 16) + 1)
-                    endSlice=7+packetLength
+                    packetLength = int(int(data[4:5].hex(), 16) / 16) + 1
+                    endSlice = 7 + packetLength
                     calibrationResponse = data[7:endSlice]
                     self.parseCalibrationResponse(calibrationResponse)
 
@@ -135,7 +140,7 @@ class Wiiboard:
                         print("Ready for input, please stand on WiiBoard")
                         self.calibrationRequested = False
             elif intype == EXTENSION_8BYTES:
-                boardEvent=self.createBoardEvent(data[2:12])
+                boardEvent = self.createBoardEvent(data[2:12])
                 self.processor.mass(boardEvent)
             else:
                 print("ACK to data write received")
@@ -199,20 +204,28 @@ class Wiiboard:
         topRight = self.calcMass(rawTR, TOP_RIGHT)
         bottomLeft = self.calcMass(rawBL, BOTTOM_LEFT)
         bottomRight = self.calcMass(rawBR, BOTTOM_RIGHT)
-        boardEvent = BoardEvent(topLeft, topRight, bottomLeft, bottomRight, buttonPressed, buttonReleased)
+        boardEvent = BoardEvent(
+            topLeft, topRight, bottomLeft, bottomRight, buttonPressed, buttonReleased
+        )
         return boardEvent
 
     def calcMass(self, raw, pos):
         val = 0.0
-        #calibration[0] is calibration values for 0kg
-        #calibration[1] is calibration values for 17kg
-        #calibration[2] is calibration values for 34kg
+        # calibration[0] is calibration values for 0kg
+        # calibration[1] is calibration values for 17kg
+        # calibration[2] is calibration values for 34kg
         if raw < self.calibration[0][pos]:
             return val
         elif raw < self.calibration[1][pos]:
-            val = 17 * ((raw - self.calibration[0][pos]) / float((self.calibration[1][pos] - self.calibration[0][pos])))
+            val = 17 * (
+                (raw - self.calibration[0][pos])
+                / float((self.calibration[1][pos] - self.calibration[0][pos]))
+            )
         elif raw > self.calibration[1][pos]:
-            val = 17 + 17 * ((raw - self.calibration[1][pos]) / float((self.calibration[2][pos] - self.calibration[1][pos])))
+            val = 17 + 17 * (
+                (raw - self.calibration[1][pos])
+                / float((self.calibration[2][pos] - self.calibration[1][pos]))
+            )
 
         return val
 
@@ -227,11 +240,15 @@ class Wiiboard:
         if len(bytes) == 16:
             for i in range(2):
                 for j in range(4):
-                    self.calibration[i][j] = (int((bytes[index:index+1]).hex(), 16) << 8) + int((bytes[index+1:index+2]).hex(), 16)
+                    self.calibration[i][j] = (
+                        int((bytes[index : index + 1]).hex(), 16) << 8
+                    ) + int((bytes[index + 1 : index + 2]).hex(), 16)
                     index += 2
         elif len(bytes) < 16:
             for i in range(4):
-                self.calibration[2][i] = (int(bytes[index:index+1].hex(), 16) << 8) + int(bytes[index+1:index+2].hex(), 16)
+                self.calibration[2][i] = (
+                    int(bytes[index : index + 1].hex(), 16) << 8
+                ) + int(bytes[index + 1 : index + 2].hex(), 16)
                 index += 2
 
     # Send <data> to the Wiiboard
@@ -240,31 +257,38 @@ class Wiiboard:
         if self.status != "Connected":
             return
 
-        updatedHex = "52" + dataHex[2:]        
+        updatedHex = "52" + dataHex[2:]
 
         self.controlsocket.send(bytes.fromhex(updatedHex))
 
-    #Turns the power button LED on if light is True, off if False
-    #The board must be connected in order to set the light
+    # Turns the power button LED on if light is True, off if False
+    # The board must be connected in order to set the light
     def setLight(self, light):
         if light:
             val = "10"
         else:
             val = "00"
 
-        message = "00"+str(COMMAND_LIGHT) + val
+        message = "00" + str(COMMAND_LIGHT) + val
         self.send(message)
         self.LED = light
 
     def calibrate(self):
-        message = "00" + str(COMMAND_READ_REGISTER) +"04" + "A4" + "00" + "24" + "00" + "18"
+        message = (
+            "00" + str(COMMAND_READ_REGISTER) + "04" + "A4" + "00" + "24" + "00" + "18"
+        )
         print("Requesting calibration")
         self.send(message)
         self.calibrationRequested = True
 
     def setReportingType(self):
-        #bytearr = ["00", COMMAND_REPORTING, CONTINUOUS_REPORTING, EXTENSION_8BYTES]
-        bytearr = "00"+ str(COMMAND_REPORTING) + str(CONTINUOUS_REPORTING) + str(EXTENSION_8BYTES)
+        # bytearr = ["00", COMMAND_REPORTING, CONTINUOUS_REPORTING, EXTENSION_8BYTES]
+        bytearr = (
+            "00"
+            + str(COMMAND_REPORTING)
+            + str(CONTINUOUS_REPORTING)
+            + str(EXTENSION_8BYTES)
+        )
         self.send(bytearr)
 
     def wait(self, millis):
@@ -281,7 +305,6 @@ def main():
     else:
         address = sys.argv[1]
 
-
     print("Trying to connect...")
     board.connect(address)  # The wii board must be in sync mode at this time
     board.wait(200)
@@ -292,6 +315,7 @@ def main():
     board.receive()
 
     print(processor.weight)
+
 
 if __name__ == "__main__":
     main()
