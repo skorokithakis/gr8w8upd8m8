@@ -11,40 +11,77 @@ pygame) removed. I'm pretty sure it only works on Linux.
 ## Requirements
 
 To run `gr8w8upd8m8`, you need:
-* Linux.
-* The `bluez-utils` package (you might need to install also `python-bluez`).
-* Bluetooth.
+* Recent version of Linux (e.g 5.15 kernel)
+* Python 3
+* Bluetooth (install `bluez` and `python3-bluez`). Bluez 5+ should be fine.
 
-## Pairing the board
+## Quickstart
 
-Thanks to Ryan Myers for the following:
+ 1. Get a Raspberry Pi
+ 1. Put the [Raspberry Pi OS Lite](https://www.raspberrypi.com/software/) on a SD card, and follow basic setup instructions
+ 1. Open a terminal on the Raspberry Pi (by SSHing or directly)
+ 1. Install necessary bluetooth software: `sudo apt-get install bluetooth bluez python3-bluez`
+ 1. Clone project
+ 1. Run script `./gr8w8upd8m8.py` (runs in userspace, no `sudo` required)
+ 1. Follow the instructions (note: sync button is in the battery compartment)
+ 1. When you're done, you should see output like the following, with your weight in kg at the bottom:
+```
+$ ./gr8w8upd8m8.py 
+Discovering board...
+Press the red sync button on the board now
+Found WiiBoard at address 00:22:4C:47:BC:9B
+Trying to connect...
+Connected to WiiBoard at address 00:22:4C:47:BC:9B
+Requesting calibration
+WiiBoard connected
+ACK to data write received
+Calibration input received
+Calibration input received
+Ready for input, please stand on WiiBoard
+Starting measurement.
+WiiBoard disconnected
+77.62
+```
 
-Install `bluez bluez-utils python-bluez`, and run the included `xwiibind.sh`. Follow the prompts, and your balance
-board should be paired by the end of this. Notice that BlueZ 4.99 is required, BlueZ 5+ changes the DBus API in
-incompatible ways.
+## Environment tested on
 
-## Usage
+```
+$ cat /proc/cpuinfo | grep Model
+Model           : Raspberry Pi 4 Model B Rev 1.1
 
-You can run it with:
+$ uname -a
+Linux raspberrypi 5.15.56-v8+ #1575 SMP PREEMPT Fri Jul 22 20:31:26 BST 2022 aarch64 GNU/Linux
 
-    ./gr8w8upd8m8.py
+$ dpkg -l | grep blue
+ii  bluetooth                            5.55-3.1+rpt1                    all          Bluetooth support (metapackage)
+ii  bluez                                5.55-3.1+rpt1                    arm64        Bluetooth tools and daemons
+ii  bluez-firmware                       1.2-4+rpt8                       all          Firmware for Bluetooth devices
+ii  libbluetooth3:arm64                  5.55-3.1+rpt1                    arm64        Library to use the BlueZ Linux Bluetooth stack
+ii  pi-bluetooth                         0.1.19                           all          Raspberry Pi 3 bluetooth
+ii  python3-bluez                        0.23-3                           arm64        Python 3 wrappers around BlueZ for rapid bluetooth development
 
-It will prompt you to put the board in sync mode and it will search for and connect to it.
 
-If you already know the address, you can just specify it:
+```
 
-    ./gr8w8upd8m8.py <board address>
+## Constant running
 
-That will skip the discovery process, and connect directly.
+While there will undoubtedly be a better Python way to do this, I run the script repeatedly in a `screen` session.
 
-`gr8w8upd8m8` uses the `bluez-test-device` utility of `bluez-utils` to disconnect the board at the end, which causes
-the board to shut off. Pairing it with the OS will allow you to use the front button to reconnect to it and run the
-script.
+```sh
+screen
 
-Calculating the final weight is done by calculating the mode of all the event data, rounded to one decimal digit.
+while true; do ./gr8w8upd8m8.py; sleep 4; done
+```
 
-Feel free to use processor.weight to do whatever you want with the calculated weight (I send it to a server for
-further pointless processing).
+This will endlessly look for the board, so you can forget about having to run the script, and all you need to do is press the sync button.
+
+## Pitfalls
+
+Very very occasionally, the board can get into a state where it only reads zero as weight. When you run the script, the light on the board stays solid but it will never measure, as the script ignores any weight under 30Kg.
+
+To fix this:
+ 1. The board needs to run through the correct initialisation sequence, so get your hands on Wii Fit and run the body test until you get readings. It might take a few power cycles.
+ 1. Ensure the batteries are charged.
 
 ## License
 
