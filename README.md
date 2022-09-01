@@ -2,7 +2,6 @@
 
 [![Code Shelter](https://www.codeshelter.co/static/badges/badge-flat.svg)](https://www.codeshelter.co/)
 
-
 ## A Wii balance board weight reporter
 
 This script is based on [wiiboard-simple](https://code.google.com/p/wiiboard-simple/), with some dependencies (like
@@ -59,8 +58,6 @@ ii  bluez-firmware                       1.2-4+rpt8                       all   
 ii  libbluetooth3:arm64                  5.55-3.1+rpt1                    arm64        Library to use the BlueZ Linux Bluetooth stack
 ii  pi-bluetooth                         0.1.19                           all          Raspberry Pi 3 bluetooth
 ii  python3-bluez                        0.23-3                           arm64        Python 3 wrappers around BlueZ for rapid bluetooth development
-
-
 ```
 
 ## Constant running
@@ -77,10 +74,10 @@ This will endlessly look for the board, so you can forget about having to run th
 
 ## Pitfalls
 
-Very very occasionally, the board can get into a state where it only reads zero as weight. When you run the script, the light on the board stays solid but it will never measure, as the script ignores any weight under 30Kg.
+Very very occasionally, the board can get into a state where it only reads zero as weight, and will continue to do so even after power cycling. When you run the script, the light on the board stays solid but it will never measure (as the script ignores any weight under 30Kg).
 
 To fix this:
- 1. The board needs to run through the correct initialisation sequence, so get your hands on Wii Fit and run the body test until you get readings. It might take a few power cycles.
+ 1. The board needs to run through the correct initialisation sequence, so get your hands on a Wii + Wii Fit software and run the body test until you start getting readings from the board. It might take a few power cycles of the board and the Wii
  1. Ensure the batteries are charged.
 
 ## License
@@ -93,5 +90,4 @@ This project is a mix of various scripts and samples. Thanks go to:
 
 * [wiiboard-simple](https://code.google.com/p/wiiboard-simple/), for providing the base script.
 * [Ryan Myers](https://github.com/Ryan-Myers/), for his [Wiiboard-Net](https://github.com/Ryan-Myers/Wiiboard-Net)
-project and for telling me about `xwiibind.sh.`
-* [xwiimote](https://github.com/dvdhrm/xwiimote) for the xwiibind.sh script itself.
+project
