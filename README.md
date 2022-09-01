@@ -25,7 +25,7 @@ To run `gr8w8upd8m8`, you need:
  1. Follow the instructions (note: sync button is in the battery compartment)
  1. When you're done, you should see output like the following, with your weight in kg at the bottom:
 ```
-$ ./gr8w8upd8m8.py 
+$ ./gr8w8upd8m8.py
 Discovering board...
 Press the red sync button on the board now
 Found WiiBoard at address 00:22:4C:47:BC:9B
